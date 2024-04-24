@@ -161,6 +161,7 @@ public class Board {
 	 */
 	public void printBoard() {
 		// 表示
+		System.out.println();
 		System.out.println(" |1234");
 		System.out.println("-+----");
 		for(int row = 0; row < SIZE; row++) {
