@@ -35,9 +35,9 @@ public class Sudoku {
 		while(!board.isFilled()) {
 			//入力をboardに反映
 			board.setCell(
-					inputRestriction(1, Board.SIZE, "行"),
-					inputRestriction(1, Board.SIZE, "列"),
-					inputRestriction(1, Board.SIZE, "値")
+					inputRestriction(1, Board.SIZE+1, "行"),
+					inputRestriction(1, Board.SIZE+1, "列"),
+					inputRestriction(1, Board.SIZE+1, "値")
 					);
 			//表示
 			board.printBoard();
@@ -60,7 +60,7 @@ public class Sudoku {
 		int num = 0;
 		while(true) {
 //			System.out.print(String.format("%s[%d, %d) : ", description, lowerLimit, upperLimit));
-			System.out.print(description + "[" + lowerLimit + ", " + upperLimit + ") : ");
+			System.out.print(description + "[" + lowerLimit + ", " + (upperLimit-1) + "] : ");
 			num = scan.nextInt();
 			
 			if(lowerLimit <= num && num < upperLimit) {
@@ -77,7 +77,7 @@ public class Sudoku {
 	 */
 	private void judgeResult() {
 		//正解か判定
-		System.out.println(board.isSuccess() ? "You Win!" : "Faild...");
+		System.out.println(board.isSuccess() ? "Complete!" : "Faild...");
 		
 	}
 	
