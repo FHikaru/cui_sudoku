@@ -23,7 +23,7 @@ public class Main {
 			System.out.print("列："); colIndex = scan.nextInt();
 			System.out.print("値："); cellData = scan.nextInt();
 			//入力をboardに反映
-			board.setCell(rowIndex-1, colIndex-1, cellData);
+			board.setCell(rowIndex, colIndex, cellData);
 			//表示
 			board.printBoard();
 		}

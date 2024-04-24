@@ -24,15 +24,24 @@ public class Board {
 	
 	/**
 	 * 盤面のセル内に値を代入する
-	 * @param rowIndex : 行のインデックス　[0, 盤面の一辺の長さ)
-	 * @param colIndex : 列のインデックス [0, 盤面の一辺の長さ)
+	 * @param rowIndex : 行のインデックス　[1, 盤面の一辺の長さ]
+	 * @param colIndex : 列のインデックス [1, 盤面の一辺の長さ]
 	 * @param cellData : 代入する値[1, 盤面の一辺の長さ]
 	 */
 	public void setCell(int rowIndex, int colIndex, int cellData) {
-		if(cellData > 0 && cellData <= SIZE) {
-			cells[rowIndex][colIndex] = cellData-1;
-			
+		if(!(0 < rowIndex && rowIndex <= SIZE)) {
+			System.err.println("rowIndex : " + rowIndex + " : out of range!");
+			return;
 		}
+		if(!(0 < colIndex && colIndex <= SIZE)) {
+			System.err.println("colIndex : " + colIndex + " : out of range!");
+			return;
+		}
+		if(!(0 < cellData && cellData <= SIZE)) {
+			System.err.println("cellData : " + cellData + " : outside the defined range!");
+			return;
+		}
+		cells[rowIndex-1][colIndex-1] = cellData-1;
 	}
 	
 	/**
