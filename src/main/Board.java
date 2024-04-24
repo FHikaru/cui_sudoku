@@ -4,8 +4,8 @@ package main;
  *　数独の盤面
  */
 public class Board {
-	private static int SIZE = 4; //盤面の一辺の長さ[平方数]
-	private static int INITNUM = -1; //盤面の初期値
+	public static final int SIZE = 4; //盤面の一辺の長さ[平方数]
+	private static final int INITNUM = -1; //盤面の初期値
 	
 	private int[][] cells; //盤面そのもの。値は[0, SIZE)
 	
