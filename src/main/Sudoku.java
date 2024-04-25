@@ -6,10 +6,11 @@ import java.util.Scanner;
  * 数独を遊べるゲーム管理クラス
  */
 public class Sudoku {
+	
 	private Scanner scan;
 	
 	private Board board;
-	
+	private final int BOARDSIZE = 4;
 	
 	
 	/**
@@ -18,13 +19,62 @@ public class Sudoku {
 	 */
 	public Sudoku() {
 		scan = new Scanner(System.in);
-		board = new Board();
+		board = new Board(BOARDSIZE);
+		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
 //	public Sudoku(Scanner scan) {
 //		this.scan = scan;
 //		board = new Board();
 //	}
+	
+//	/**
+//	 * 答えが一意に決まる盤面を作成する。
+//	 */
+//	private void genUniqueBoard() {
+//		for(int row = 1; row <= BOARDSIZE; row++) {
+//			for(int col = 1; col <= BOARDSIZE; col++) {
+//				for(int num = 1; num <= BOARDSIZE; num++) {
+//					board.setCell(row, col, num);
+//				}
+//			}
+//		}
+//	}
+	
+	/**
+	 * 
+	 * @param board
+	 */
+	private int countBoardAnswer(Board board) {
+		int counter = 0;
+		int rStart, cStart, nStart;
+
+		rStart = (int)(Math.random()*BOARDSIZE);
+		cStart = (int)(Math.random()*BOARDSIZE);
+		nStart = (int)(Math.random()*BOARDSIZE);
+		
+		for(int row = 1; row <= BOARDSIZE; row++) {
+			for(int col = 1; col <= BOARDSIZE; col++) {
+				for(int num = 1; num <= BOARDSIZE; num++) {
+					int r, c, n;
+					r = ((rStart + row) % BOARDSIZE )+1;
+					c = ((cStart + col) % BOARDSIZE )+1;
+					n = ((nStart + num) % BOARDSIZE )+1;
+					if(board.isBlank(r, c)) {
+						Board next = board.copyBoard();
+						next.setCell(r, c, n);
+//						next.printBoard();
+						counter += countBoardAnswer(next);
+					}
+				}
+			}
+		}
+		if(board.isSuccess()) {
+			counter++;
+			board.printBoard();
+		}
+		return counter;
+	}
 	
 	/**
 	 * ゲームを開始して終了まで続ける
@@ -35,9 +85,9 @@ public class Sudoku {
 		while(!board.isFilled()) {
 			//入力をboardに反映
 			board.setCell(
-					inputRestriction(1, Board.SIZE+1, "行"),
-					inputRestriction(1, Board.SIZE+1, "列"),
-					inputRestriction(1, Board.SIZE+1, "値")
+					inputRestriction(1, board.SIZE+1, "行"),
+					inputRestriction(1, board.SIZE+1, "列"),
+					inputRestriction(1, board.SIZE+1, "値")
 					);
 			//表示
 			board.printBoard();

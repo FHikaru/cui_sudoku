@@ -4,7 +4,7 @@ package main;
  *　数独の盤面
  */
 public class Board {
-	public static final int SIZE = 4; //盤面の一辺の長さ[平方数]
+	public final int SIZE; //盤面の一辺の長さ[平方数]
 	private static final int INITNUM = -1; //盤面の初期値
 	
 	private int[][] cells; //盤面そのもの。値は[0, SIZE)
@@ -12,7 +12,8 @@ public class Board {
 	/**
 	 * コンストラクタ
 	 */
-	public Board() {
+	public Board(int size) {
+		SIZE = size;
 		cells = new int[SIZE][SIZE];
 		//初期化
 		for(int row = 0; row < SIZE; row++) {
@@ -20,6 +21,29 @@ public class Board {
 				cells[row][column] = INITNUM;
 			}
 		}
+	}
+	
+	/**
+	 * コピーコンストラクタ
+	 * Boardインスタンスで初期化する
+	 * @param board　: Board : コピー元のBoard
+	 */
+	public Board(Board board) {
+		this.SIZE = board.SIZE;
+		this.cells = new int[board.SIZE][board.SIZE];
+		for(int row = 0; row < board.SIZE; row++) {
+			for(int column = 0; column < board.SIZE; column++) {
+				cells[row][column] = board.cells[row][column];
+			}
+		}
+	}
+	
+	/**
+	 * コピー生成
+	 * @return　Board : コピー後のBoard
+	 */
+	public Board copyBoard() {
+		return new Board(this);
 	}
 	
 	/**
@@ -49,6 +73,10 @@ public class Board {
 	 * @return　boolean : 数独の条件を全て満たして入れば true
 	 */
 	public boolean isSuccess() {
+		if(!isFilled()) {
+			return false;
+		}
+		
 		boolean correct = true;
 		
 		//水平方向（行）の判定
@@ -137,6 +165,23 @@ public class Board {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * 盤面のセル内が空白か判定する。
+	 * @param rowIndex : 行のインデックス　[1, 盤面の一辺の長さ]
+	 * @param colIndex : 列のインデックス [1, 盤面の一辺の長さ]
+	 */
+	public boolean isBlank(int rowIndex, int colIndex) {
+		if(!(0 < rowIndex && rowIndex <= SIZE)) {
+			System.err.println("rowIndex : " + rowIndex + " : out of range!");
+			return false;
+		}
+		if(!(0 < colIndex && colIndex <= SIZE)) {
+			System.err.println("colIndex : " + colIndex + " : out of range!");
+			return false;
+		}
+		return this.cells[rowIndex-1][colIndex-1] == INITNUM;
 	}
 	
 	/**
