@@ -4,8 +4,8 @@ package main;
  *　数独の盤面
  */
 public class Board {
-	private static int SIZE = 4; //盤面の一辺の長さ[平方数]
-	private static int INITNUM = -1; //盤面の初期値
+	public static final int SIZE = 4; //盤面の一辺の長さ[平方数]
+	private static final int INITNUM = -1; //盤面の初期値
 	
 	private int[][] cells; //盤面そのもの。値は[0, SIZE)
 	
@@ -24,15 +24,24 @@ public class Board {
 	
 	/**
 	 * 盤面のセル内に値を代入する
-	 * @param rowIndex : 行のインデックス　[0, 盤面の一辺の長さ)
-	 * @param colIndex : 列のインデックス [0, 盤面の一辺の長さ)
+	 * @param rowIndex : 行のインデックス　[1, 盤面の一辺の長さ]
+	 * @param colIndex : 列のインデックス [1, 盤面の一辺の長さ]
 	 * @param cellData : 代入する値[1, 盤面の一辺の長さ]
 	 */
 	public void setCell(int rowIndex, int colIndex, int cellData) {
-		if(cellData > 0 && cellData <= SIZE) {
-			cells[rowIndex][colIndex] = cellData-1;
-			
+		if(!(0 < rowIndex && rowIndex <= SIZE)) {
+			System.err.println("rowIndex : " + rowIndex + " : out of range!");
+			return;
 		}
+		if(!(0 < colIndex && colIndex <= SIZE)) {
+			System.err.println("colIndex : " + colIndex + " : out of range!");
+			return;
+		}
+		if(!(0 < cellData && cellData <= SIZE)) {
+			System.err.println("cellData : " + cellData + " : outside the defined range!");
+			return;
+		}
+		cells[rowIndex-1][colIndex-1] = cellData-1;
 	}
 	
 	/**
@@ -152,6 +161,7 @@ public class Board {
 	 */
 	public void printBoard() {
 		// 表示
+		System.out.println();
 		System.out.println(" |1234");
 		System.out.println("-+----");
 		for(int row = 0; row < SIZE; row++) {
