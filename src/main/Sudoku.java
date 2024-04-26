@@ -46,6 +46,11 @@ public class Sudoku {
 	 * @param board
 	 */
 	private int countBoardAnswer(Board board) {
+		//現盤面がすでに数独の制約を満たさないなら枝刈り(再帰探索の打ち切り)をする。
+		if(!board.isCorrect()) {
+			return 0;
+		}
+		
 		int counter = 0;
 		int rStart, cStart, nStart;
 
@@ -71,7 +76,7 @@ public class Sudoku {
 		}
 		if(board.isSuccess()) {
 			counter++;
-			board.printBoard();
+//			board.printBoard();
 		}
 		return counter;
 	}

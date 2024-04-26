@@ -69,6 +69,77 @@ public class Board {
 	}
 	
 	/**
+	 * 数独の制約に現段階で満たしているか判定する
+	 * @return boolean : 数独の条件を満たしていない部分があれば false
+	 */
+	public boolean isCorrect() {
+
+		boolean correct = true;
+		
+		//水平方向（行）の判定
+		for(int row = 0; row < cells.length; row++) {
+			boolean[] check = new boolean[SIZE];
+			for(int i = 0; i < SIZE; i++) {
+				check[i] = false;
+			}
+			
+			for(int i = 0; i < SIZE; i++) {
+				int cell = cells[row][i];
+				if(cell == INITNUM) { // 行に空欄がある場合
+					continue;
+				}if(check[cell]) { // 行内の数値に重複があるとき
+					return false;
+				}
+				check[cell] = true;
+			}
+		}
+		//垂直方向(列)の判定
+		for(int col = 0; col < cells[0].length; col++) {
+			boolean[] check = new boolean[SIZE];
+			for(int i = 0; i < SIZE; i++) {
+				check[i] = false;
+			}
+			
+			for(int i = 0; i < SIZE; i++) {
+				int cell = cells[i][col];
+				if(cell == INITNUM) { // 列に空欄がある場合
+					continue;
+				}if(check[cell]) { // 列内の数値に重複があるとき
+					return false;
+				}
+				check[cell] = true;
+			}
+		}
+		//格子ごとの判定
+		int sqrtSize = (int)Math.sqrt(SIZE);
+		for(int row = 0; row < SIZE; row += sqrtSize) {
+			for(int col = 0; col < SIZE; col += sqrtSize) {
+				//格子の(0, 0)位置
+				
+				boolean[] check = new boolean[SIZE];
+				for(int i = 0; i < SIZE; i++) {
+					check[i] = false;
+				}
+				
+				for(int i = 0; i < sqrtSize; i++) {
+					for(int j = 0; j < sqrtSize; j++) {
+						int cell = cells[row + i][col + j];
+						if(cell == INITNUM) { // 格子に空欄がある場合
+							continue;
+						}if(check[cell]) { // 格子内の数値に重複があるとき
+							return false;
+						}
+						check[cell] = true;
+					}
+				}
+
+			}
+		}
+		
+		return correct;
+	}
+	
+	/**
 	 * 数独が完成しているかを判定する
 	 * @return　boolean : 数独の条件を全て満たして入れば true
 	 */
@@ -88,12 +159,15 @@ public class Board {
 			
 			for(int i = 0; i < SIZE; i++) {
 				int cell = cells[row][i];
-//				if(cell < SIZE && cell >= 0) {
-//					
+//				if(cell == INITNUM) { // 行に空欄がある場合
+//					continue;
+//				}if(check[cell]) { // 行内の数値に重複があるとき
+//					return false;
 //				}
 				check[cell] = true;
 			}
 			
+			// 行内に全ての数字が存在するかチェック
 			for(boolean tf : check) {
 				if(!tf) {
 					correct = false;
@@ -109,12 +183,15 @@ public class Board {
 			
 			for(int i = 0; i < SIZE; i++) {
 				int cell = cells[i][col];
-//				if(cell < SIZE && cell >= 0) {
-//					
+//				if(cell == INITNUM) { // 列に空欄がある場合
+//					continue;
+//				}if(check[cell]) { // 列内の数値に重複があるとき
+//					return false;
 //				}
 				check[cell] = true;
 			}
-			
+
+			// 列内に全ての数字が存在するかチェック
 			for(boolean tf : check) {
 				if(!tf) {
 					correct = false;
@@ -137,10 +214,16 @@ public class Board {
 				for(int i = 0; i < sqrtSize; i++) {
 					for(int j = 0; j < sqrtSize; j++) {
 						int cell = cells[row + i][col + j];
+//						if(cell == INITNUM) { // 格子に空欄がある場合
+//							continue;
+//						}if(check[cell]) { // 格子内の数値に重複があるとき
+//							return false;
+//						}
 						check[cell] = true;
 					}
 				}
-				
+
+				// 格子内に全ての数字が存在するかチェック
 				for(boolean tf : check) {
 					if(!tf) {
 						correct = false;
@@ -148,6 +231,7 @@ public class Board {
 				}
 			}
 		}
+
 		return correct;
 		
 	}
