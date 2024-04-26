@@ -20,6 +20,7 @@ public class Sudoku {
 	public Sudoku() {
 		scan = new Scanner(System.in);
 		board = new Board(BOARDSIZE);
+		board = genUniqueBoard(board);
 		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
@@ -28,18 +29,54 @@ public class Sudoku {
 //		board = new Board();
 //	}
 	
-//	/**
-//	 * 答えが一意に決まる盤面を作成する。
-//	 */
-//	private void genUniqueBoard() {
-//		for(int row = 1; row <= BOARDSIZE; row++) {
-//			for(int col = 1; col <= BOARDSIZE; col++) {
-//				for(int num = 1; num <= BOARDSIZE; num++) {
-//					board.setCell(row, col, num);
-//				}
-//			}
-//		}
-//	}
+	/**
+	 * 解がユニークな盤面を作成して返す関数
+	 * @param board : Board : 種となる盤面
+	 * @return Board : 作成された盤面(解がない場合はnull)
+	 */
+	private Board genUniqueBoard(Board board) {
+		//現盤面がすでに数独の制約を満たさないなら枝刈り(再帰探索の打ち切り)をする。
+		if(!board.isCorrect()) {
+			return null;
+		}
+
+		boolean selected = false;
+
+		int rStart, cStart, nStart;
+
+		rStart = (int)(Math.random()*BOARDSIZE);
+		cStart = (int)(Math.random()*BOARDSIZE);
+		nStart = (int)(Math.random()*BOARDSIZE);
+
+		for(int row = 1; row <= BOARDSIZE; row++) {
+			for(int col = 1; col <= BOARDSIZE; col++) {
+				for(int num = 1; num <= BOARDSIZE; num++) {
+					int r, c, n;
+					r = ((rStart + row) % BOARDSIZE )+1;
+					c = ((cStart + col) % BOARDSIZE )+1;
+					n = ((nStart + num) % BOARDSIZE )+1;
+					if(board.isBlank(r, c)) {
+						Board next = board.copyBoard();
+						next.setCell(r, c, n);
+						Board ans = genUniqueBoard(next);
+						if(ans == null) {
+							continue;
+						}
+						
+						if(1 == countBoardAnswer(board)) {
+							return board;
+						}else {
+							return ans;
+						}
+					}
+				}
+			}
+		}
+		if(board.isSuccess()) {
+			return board;
+		}
+		return null;
+	}
 	
 	/**
 	 * 引数の盤面が持つ解の個数を返す
