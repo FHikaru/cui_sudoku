@@ -42,8 +42,9 @@ public class Sudoku {
 //	}
 	
 	/**
-	 * 
-	 * @param board
+	 * 引数の盤面が持つ解の個数を返す
+	 * @param board : 解の個数が知りたい盤面
+	 * @return int : 解の個数
 	 */
 	private int countBoardAnswer(Board board) {
 		//現盤面がすでに数独の制約を満たさないなら枝刈り(再帰探索の打ち切り)をする。
@@ -51,12 +52,17 @@ public class Sudoku {
 			return 0;
 		}
 		
+		boolean selected = false;
+		
 		int counter = 0;
 		int rStart, cStart, nStart;
 
-		rStart = (int)(Math.random()*BOARDSIZE);
-		cStart = (int)(Math.random()*BOARDSIZE);
-		nStart = (int)(Math.random()*BOARDSIZE);
+//		rStart = (int)(Math.random()*BOARDSIZE);
+//		cStart = (int)(Math.random()*BOARDSIZE);
+//		nStart = (int)(Math.random()*BOARDSIZE);
+		rStart = 0;
+		cStart = 0;
+		nStart = 0;
 		
 		for(int row = 1; row <= BOARDSIZE; row++) {
 			for(int col = 1; col <= BOARDSIZE; col++) {
@@ -70,7 +76,15 @@ public class Sudoku {
 						next.setCell(r, c, n);
 //						next.printBoard();
 						counter += countBoardAnswer(next);
+						selected = true;
 					}
+				}
+				if(selected) {
+					if(board.isSuccess()) {
+						counter++;
+//						board.printBoard();
+					}
+					return counter;
 				}
 			}
 		}
