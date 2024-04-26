@@ -6,10 +6,11 @@ import java.util.Scanner;
  * 数独を遊べるゲーム管理クラス
  */
 public class Sudoku {
+	
 	private Scanner scan;
 	
 	private Board board;
-	
+	private final int BOARDSIZE = 4;
 	
 	
 	/**
@@ -18,13 +19,118 @@ public class Sudoku {
 	 */
 	public Sudoku() {
 		scan = new Scanner(System.in);
-		board = new Board();
+		board = new Board(BOARDSIZE);
+		board = genUniqueBoard(board);
+		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
 //	public Sudoku(Scanner scan) {
 //		this.scan = scan;
 //		board = new Board();
 //	}
+	
+	/**
+	 * 解がユニークな盤面を作成して返す関数
+	 * @param board : Board : 種となる盤面
+	 * @return Board : 作成された盤面(解がない場合はnull)
+	 */
+	private Board genUniqueBoard(Board board) {
+		//現盤面がすでに数独の制約を満たさないなら枝刈り(再帰探索の打ち切り)をする。
+		if(!board.isCorrect()) {
+			return null;
+		}
+
+		boolean selected = false;
+
+		int rStart, cStart, nStart;
+
+		rStart = (int)(Math.random()*BOARDSIZE);
+		cStart = (int)(Math.random()*BOARDSIZE);
+		nStart = (int)(Math.random()*BOARDSIZE);
+
+		for(int row = 1; row <= BOARDSIZE; row++) {
+			for(int col = 1; col <= BOARDSIZE; col++) {
+				for(int num = 1; num <= BOARDSIZE; num++) {
+					int r, c, n;
+					r = ((rStart + row) % BOARDSIZE )+1;
+					c = ((cStart + col) % BOARDSIZE )+1;
+					n = ((nStart + num) % BOARDSIZE )+1;
+					if(board.isBlank(r, c)) {
+						Board next = board.copyBoard();
+						next.setCell(r, c, n);
+						Board ans = genUniqueBoard(next);
+						if(ans == null) {
+							continue;
+						}
+						
+						if(1 == countBoardAnswer(board)) {
+							return board;
+						}else {
+							return ans;
+						}
+					}
+				}
+			}
+		}
+		if(board.isSuccess()) {
+			return board;
+		}
+		return null;
+	}
+	
+	/**
+	 * 引数の盤面が持つ解の個数を返す
+	 * @param board : 解の個数が知りたい盤面
+	 * @return int : 解の個数
+	 */
+	private int countBoardAnswer(Board board) {
+		//現盤面がすでに数独の制約を満たさないなら枝刈り(再帰探索の打ち切り)をする。
+		if(!board.isCorrect()) {
+			return 0;
+		}
+		
+		boolean selected = false;
+		
+		int counter = 0;
+		int rStart, cStart, nStart;
+
+//		rStart = (int)(Math.random()*BOARDSIZE);
+//		cStart = (int)(Math.random()*BOARDSIZE);
+//		nStart = (int)(Math.random()*BOARDSIZE);
+		rStart = 0;
+		cStart = 0;
+		nStart = 0;
+		
+		for(int row = 1; row <= BOARDSIZE; row++) {
+			for(int col = 1; col <= BOARDSIZE; col++) {
+				for(int num = 1; num <= BOARDSIZE; num++) {
+					int r, c, n;
+					r = ((rStart + row) % BOARDSIZE )+1;
+					c = ((cStart + col) % BOARDSIZE )+1;
+					n = ((nStart + num) % BOARDSIZE )+1;
+					if(board.isBlank(r, c)) {
+						Board next = board.copyBoard();
+						next.setCell(r, c, n);
+//						next.printBoard();
+						counter += countBoardAnswer(next);
+						selected = true;
+					}
+				}
+				if(selected) {
+					if(board.isSuccess()) {
+						counter++;
+//						board.printBoard();
+					}
+					return counter;
+				}
+			}
+		}
+		if(board.isSuccess()) {
+			counter++;
+//			board.printBoard();
+		}
+		return counter;
+	}
 	
 	/**
 	 * ゲームを開始して終了まで続ける
@@ -35,9 +141,9 @@ public class Sudoku {
 		while(!board.isFilled()) {
 			//入力をboardに反映
 			board.setCell(
-					inputRestriction(1, Board.SIZE+1, "行"),
-					inputRestriction(1, Board.SIZE+1, "列"),
-					inputRestriction(1, Board.SIZE+1, "値")
+					inputRestriction(1, board.SIZE+1, "行"),
+					inputRestriction(1, board.SIZE+1, "列"),
+					inputRestriction(1, board.SIZE+1, "値")
 					);
 			//表示
 			board.printBoard();
