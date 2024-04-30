@@ -13,6 +13,11 @@ public class Board {
 	 * コンストラクタ
 	 */
 	public Board(int size) {
+		//sizeが平方数かの判定
+		int sizeSqrt = (int)Math.sqrt((double)size);
+		if(size != sizeSqrt * sizeSqrt) {
+			System.err.println("引数が平方数ではありません");
+		}
 		SIZE = size;
 		cells = new int[SIZE][SIZE];
 		//初期化
@@ -291,8 +296,16 @@ public class Board {
 	public void printBoard() {
 		// 表示
 		System.out.println();
-		System.out.println(" |1234");
-		System.out.println("-+----");
+		System.out.print(" |");
+		for(int col = 0; col < SIZE; col++) {
+			System.out.print(col+1);
+		}
+		System.out.println();
+		System.out.print("-+");
+		for(int col = 0; col < SIZE; col++) {
+			System.out.print("-");
+		}
+		System.out.println();
 		for(int row = 0; row < SIZE; row++) {
 			System.out.print(row+1 + "|");
 			for(int column = 0; column < SIZE; column++) {

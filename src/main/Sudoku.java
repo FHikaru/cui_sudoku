@@ -20,7 +20,7 @@ public class Sudoku {
 	public Sudoku() {
 		scan = new Scanner(System.in);
 		board = new Board(BOARDSIZE);
-		board = genUniqueBoard(board);
+//		board = genUniqueBoard(board);
 		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
@@ -29,6 +29,7 @@ public class Sudoku {
 //		board = new Board();
 //	}
 	
+
 	/**
 	 * 解がユニークな盤面を作成して返す関数
 	 * @param board : Board : 種となる盤面
@@ -39,7 +40,8 @@ public class Sudoku {
 		if(!board.isCorrect()) {
 			return null;
 		}
-
+//		board.printBoard();
+		
 		boolean selected = false;
 
 		int rStart, cStart, nStart;
