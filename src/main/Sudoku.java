@@ -6,11 +6,12 @@ import java.util.Scanner;
  * 数独を遊べるゲーム管理クラス
  */
 public class Sudoku {
+	private final int DEFAULTSIZE = 9;
 	
 	private Scanner scan;
 	
 	private Board board;
-	private final int BOARDSIZE = 9;
+	private int size = DEFAULTSIZE;
 	
 	
 	/**
@@ -18,8 +19,30 @@ public class Sudoku {
 	 * 利用するボードをメンバとして登録する
 	 */
 	public Sudoku() {
+		this.size = DEFAULTSIZE;
 		scan = new Scanner(System.in);
-		board = new Board(BOARDSIZE);
+		board = new Board(size);
+//		board = genUniqueBoard(board);
+//		board = genAnswerBoard(BOARDSIZE);
+		board = genUniqueBoardAlt();
+		System.out.println("解の個数 : " + countBoardAnswer(board));
+	}
+	
+	/**
+	 * コンストラクタ
+	 * 利用するボードをメンバとして登録する
+	 * @param size : int : 盤面のサイズ（平方数である必要がある）
+	 */
+	public Sudoku(int size) {
+		//sizeが平方数かの判定
+		int sizeSqrt = (int)Math.sqrt((double)size);
+		if(size != sizeSqrt * sizeSqrt) {
+			System.err.println("引数が平方数ではありません");
+		}
+
+		this.size = size;
+		scan = new Scanner(System.in);
+		board = new Board(size);
 //		board = genUniqueBoard(board);
 //		board = genAnswerBoard(BOARDSIZE);
 		board = genUniqueBoardAlt();
@@ -88,12 +111,12 @@ public class Sudoku {
 	 * @return Board : 作成された盤面
 	 */
 	private Board genUniqueBoardAlt() {
-		Board board = genAnswerBoard(BOARDSIZE);
+		Board board = genAnswerBoard(size);
 		
 		
 		while(true) {
-			int row = (int)(Math.random()*BOARDSIZE) + 1;
-			int col = (int)(Math.random()*BOARDSIZE) + 1;
+			int row = (int)(Math.random()*size) + 1;
+			int col = (int)(Math.random()*size) + 1;
 			Board next = board.copyBoard();
 			next.resetCell(row, col);
 			
@@ -124,17 +147,17 @@ public class Sudoku {
 
 		int rStart, cStart, nStart;
 
-		rStart = (int)(Math.random()*BOARDSIZE);
-		cStart = (int)(Math.random()*BOARDSIZE);
-		nStart = (int)(Math.random()*BOARDSIZE);
+		rStart = (int)(Math.random()*size);
+		cStart = (int)(Math.random()*size);
+		nStart = (int)(Math.random()*size);
 
-		for(int row = 1; row <= BOARDSIZE; row++) {
-			for(int col = 1; col <= BOARDSIZE; col++) {
-				for(int num = 1; num <= BOARDSIZE; num++) {
+		for(int row = 1; row <= size; row++) {
+			for(int col = 1; col <= size; col++) {
+				for(int num = 1; num <= size; num++) {
 					int r, c, n;
-					r = ((rStart + row) % BOARDSIZE )+1;
-					c = ((cStart + col) % BOARDSIZE )+1;
-					n = ((nStart + num) % BOARDSIZE )+1;
+					r = ((rStart + row) % size )+1;
+					c = ((cStart + col) % size )+1;
+					n = ((nStart + num) % size )+1;
 					if(board.isBlank(r, c)) {
 						Board next = board.copyBoard();
 						next.setCell(r, c, n);
@@ -181,13 +204,13 @@ public class Sudoku {
 		cStart = 0;
 		nStart = 0;
 		
-		for(int row = 1; row <= BOARDSIZE; row++) {
-			for(int col = 1; col <= BOARDSIZE; col++) {
-				for(int num = 1; num <= BOARDSIZE; num++) {
+		for(int row = 1; row <= size; row++) {
+			for(int col = 1; col <= size; col++) {
+				for(int num = 1; num <= size; num++) {
 					int r, c, n;
-					r = ((rStart + row) % BOARDSIZE )+1;
-					c = ((cStart + col) % BOARDSIZE )+1;
-					n = ((nStart + num) % BOARDSIZE )+1;
+					r = ((rStart + row) % size )+1;
+					c = ((cStart + col) % size )+1;
+					n = ((nStart + num) % size )+1;
 					if(board.isBlank(r, c)) {
 						Board next = board.copyBoard();
 						next.setCell(r, c, n);
