@@ -74,6 +74,24 @@ public class Board {
 	}
 	
 	/**
+	 * 盤面のセル内の値を部分的に初期化する
+	 * @param rowIndex : 行のインデックス　[1, 盤面の一辺の長さ]
+	 * @param colIndex : 列のインデックス [1, 盤面の一辺の長さ]
+	 */
+	public void resetCell(int rowIndex, int colIndex) {
+		if(!(0 < rowIndex && rowIndex <= SIZE)) {
+			System.err.println("rowIndex : " + rowIndex + " : out of range!");
+			return;
+		}
+		if(!(0 < colIndex && colIndex <= SIZE)) {
+			System.err.println("colIndex : " + colIndex + " : out of range!");
+			return;
+		}
+		cells[rowIndex-1][colIndex-1] = INITNUM;
+		
+	}
+	
+	/**
 	 * 数独の制約に現段階で満たしているか判定する
 	 * @return boolean : 数独の条件を満たしていない部分があれば false
 	 */
