@@ -5,6 +5,7 @@ package main;
  */
 public class Board {
 	public final int SIZE; //盤面の一辺の長さ[平方数]
+	public final int SIZESQRT; //盤面の格子一辺の長さ[SIZEの平方根]
 	private static final int INITNUM = -1; //盤面の初期値
 	
 	private int[][] cells; //盤面そのもの。値は[0, SIZE)
@@ -19,6 +20,7 @@ public class Board {
 			System.err.println("引数が平方数ではありません");
 		}
 		SIZE = size;
+		SIZESQRT = sizeSqrt;
 		cells = new int[SIZE][SIZE];
 		//初期化
 		for(int row = 0; row < SIZE; row++) {
@@ -35,6 +37,7 @@ public class Board {
 	 */
 	public Board(Board board) {
 		this.SIZE = board.SIZE;
+		this.SIZESQRT = board.SIZESQRT;
 		this.cells = new int[board.SIZE][board.SIZE];
 		for(int row = 0; row < board.SIZE; row++) {
 			for(int column = 0; column < board.SIZE; column++) {
@@ -134,7 +137,7 @@ public class Board {
 			}
 		}
 		//格子ごとの判定
-		int sqrtSize = (int)Math.sqrt(SIZE);
+		int sqrtSize = SIZESQRT;
 		for(int row = 0; row < SIZE; row += sqrtSize) {
 			for(int col = 0; col < SIZE; col += sqrtSize) {
 				//格子の(0, 0)位置
@@ -224,7 +227,7 @@ public class Board {
 		}
 		
 		//格子ごとの判定
-		int sqrtSize = (int)Math.sqrt(SIZE);
+		int sqrtSize = SIZESQRT;
 		for(int row = 0; row < SIZE; row += sqrtSize) {
 			for(int col = 0; col < SIZE; col += sqrtSize) {
 				//格子の(0, 0)位置
@@ -316,24 +319,58 @@ public class Board {
 		System.out.println();
 		System.out.print(" |");
 		for(int col = 0; col < SIZE; col++) {
+			// 格子の明示するための処理（タテ）
+			if(col%SIZESQRT == 0 && col != 0) {
+				System.out.print(" ");
+			}
 			System.out.print(col+1);
 		}
-		System.out.println();
+		System.out.println(" ");
+		// ヘッダーの罫線（ヨコ）
 		System.out.print("-+");
 		for(int col = 0; col < SIZE; col++) {
+			// 格子の明示するための処理（タテ）
+			if(col%SIZESQRT == 0 && col != 0) {
+				System.out.print("+");
+			}
 			System.out.print("-");
 		}
-		System.out.println();
+		System.out.println("+");
 		for(int row = 0; row < SIZE; row++) {
+			// 格子の明示するための処理（ヨコ）
+			if(row%SIZESQRT == 0 && row != 0) {
+				System.out.print(" +");
+				for(int col = 0; col < SIZE; col++) {
+					// 格子の明示するための処理（タテ）
+					if(col%SIZESQRT == 0 && col != 0) {
+						System.out.print("+");
+					}
+					System.out.print("-");
+				}
+				System.out.println("+");
+			}
 			System.out.print(row+1 + "|");
-			for(int column = 0; column < SIZE; column++) {
-				if(cells[row][column] == INITNUM) {
+			for(int col = 0; col < SIZE; col++) {
+				// 格子の明示するための処理（タテ）
+				if(col%SIZESQRT == 0 && col != 0) {
+					System.out.print("|");
+				}
+				if(cells[row][col] == INITNUM) {
 					System.out.print(".");
 				}else {
-					System.out.print(cells[row][column]+1);
+					System.out.print(cells[row][col]+1);
 				}
 			}
-			System.out.println();
+			System.out.println("|");
 		}
+		System.out.print("　+");
+		for(int col = 0; col < SIZE; col++) {
+			// 格子の明示するための処理（タテ）
+			if(col%SIZESQRT == 0 && col != 0) {
+				System.out.print("+");
+			}
+			System.out.print("-");
+		}
+		System.out.println("+");
 	}
 }
