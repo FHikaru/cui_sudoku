@@ -76,24 +76,31 @@ public class Board {
 	 * @param rowIndex : 行のインデックス　[1, 盤面の一辺の長さ]
 	 * @param colIndex : 列のインデックス [1, 盤面の一辺の長さ]
 	 * @param cellData : 代入する値[1, 盤面の一辺の長さ]
+	 * @throws OutOfRangeIndexException : rowIndexとcolIndexで範囲外を指定したときのエラー
+	 * @throws UndefinedValueException  : cellDataで規定外の値を指定したときのエラー
+	 * @throws RejectedPosionException : 問題盤面として登録されているセルを指定したときのエラー
 	 */
-	public void setCell(int rowIndex, int colIndex, int cellData) {
+	public void setCell(int rowIndex, int colIndex, int cellData) throws OutOfRangeIndexException, UndefinedValueException, RejectedPosionException {
 		if(!(0 < rowIndex && rowIndex <= SIZE)) {
-			System.err.println("rowIndex : " + rowIndex + " : out of range!");
-			return;
+//			System.err.println("rowIndex : " + rowIndex + " : out of range!");
+//			return;
+			throw new Board.OutOfRangeIndexException();
 		}
 		if(!(0 < colIndex && colIndex <= SIZE)) {
-			System.err.println("colIndex : " + colIndex + " : out of range!");
-			return;
+//			System.err.println("colIndex : " + colIndex + " : out of range!");
+//			return;
+			throw new Board.OutOfRangeIndexException();
 		}
 		if(!(0 < cellData && cellData <= SIZE)) {
-			System.err.println("cellData : " + cellData + " : outside the defined range!");
-			return;
+//			System.err.println("cellData : " + cellData + " : outside the defined range!");
+//			return;
+			throw new Board.UndefinedValueException();
 		}
 		// 問題盤面として登録されたセルは変更できないようにする
 		if(defaultCells[rowIndex-1][colIndex-1] != INITNUM) {
-			System.out.println("(rowIndex, colIndex) : (" + rowIndex + ", " + colIndex + ") : you cannot put numbers in this cell!");
-			return;
+//			System.out.println("(rowIndex, colIndex) : (" + rowIndex + ", " + colIndex + ") : you cannot put numbers in this cell!");
+//			return;
+			throw new Board.RejectedPosionException();
 		}
 		cells[rowIndex-1][colIndex-1] = cellData-1;
 	}
@@ -303,6 +310,7 @@ public class Board {
 	 * 盤面のセル内が空白か判定する。
 	 * @param rowIndex : 行のインデックス　[1, 盤面の一辺の長さ]
 	 * @param colIndex : 列のインデックス [1, 盤面の一辺の長さ]
+	 * @return boolean : 指定のセルが空白ならtrue
 	 */
 	public boolean isBlank(int rowIndex, int colIndex) {
 		if(!(0 < rowIndex && rowIndex <= SIZE)) {
@@ -415,5 +423,41 @@ public class Board {
 			System.out.print("-");
 		}
 		System.out.println("+");
+	}
+	
+	/**
+	 *  Boardの範囲外のセルを指定したときのエラー
+	 */
+	public static class OutOfRangeIndexException extends Exception {
+	    /**
+	     * コンストラクタ
+	     */
+	    OutOfRangeIndexException(){
+	      super("盤面の範囲外を指定されました");
+	    }
+	}
+	
+	/**
+	 *  Boardに登録できない値を指定したときのエラー
+	 */
+	public static class UndefinedValueException extends Exception {
+		/**
+		 * コンストラクタ
+		 */
+		UndefinedValueException(){
+			super("盤面に登録できない値が指定されました");
+		}
+	}
+	
+	/**
+	 * Boardに登録できない場所を指定したときのエラー
+	 */
+	public static class RejectedPosionException extends Exception {
+		/**
+		 * コンストラクタ
+		 */
+		RejectedPosionException(){
+			super("値を登録できないセルを指定されました");
+		}
 	}
 }
