@@ -25,6 +25,7 @@ public class Sudoku {
 //		board = genUniqueBoard(board);
 //		board = genAnswerBoard(BOARDSIZE);
 		board = genUniqueBoardAlt();
+		board.registerCells();
 //		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
@@ -46,6 +47,7 @@ public class Sudoku {
 //		board = genUniqueBoard(board);
 //		board = genAnswerBoard(BOARDSIZE);
 		board = genUniqueBoardAlt();
+		board.registerCells();
 //		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	

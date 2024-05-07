@@ -9,6 +9,7 @@ public class Board {
 	private static final int INITNUM = -1; //盤面の初期値
 	
 	private int[][] cells; //盤面そのもの。値は[0, SIZE)
+	private int[][] defaultCells; //盤面の初期値を記憶する(初期盤面と人の入力を区別する用)
 	
 	/**
 	 * コンストラクタ
@@ -28,6 +29,7 @@ public class Board {
 				cells[row][column] = INITNUM;
 			}
 		}
+		registerCells();
 	}
 	
 	/**
@@ -44,6 +46,7 @@ public class Board {
 				cells[row][column] = board.cells[row][column];
 			}
 		}
+		registerCells();
 	}
 	
 	/**
@@ -52,6 +55,20 @@ public class Board {
 	 */
 	public Board copyBoard() {
 		return new Board(this);
+	}
+	
+	/**
+	 * 現盤面を問題盤面として登録する。
+	 * 登録された盤面はdefaultCellsに格納される。
+	 * 盤面は１つしか保存できないため、直近でregisterCellを実行したときの現盤面を保持する。
+	 */
+	public void registerCells() {
+		defaultCells = new int[SIZE][SIZE];
+		for(int i = 0; i < SIZE; i++) {
+			for(int j = 0; j < SIZE; j++) {
+				defaultCells[i][j] = cells[i][j];
+			}
+		}
 	}
 	
 	/**
@@ -71,6 +88,11 @@ public class Board {
 		}
 		if(!(0 < cellData && cellData <= SIZE)) {
 			System.err.println("cellData : " + cellData + " : outside the defined range!");
+			return;
+		}
+		// 問題盤面として登録されたセルは変更できないようにする
+		if(defaultCells[rowIndex-1][colIndex-1] != INITNUM) {
+			System.out.println("(rowIndex, colIndex) : (" + rowIndex + ", " + colIndex + ") : you cannot put numbers in this cell!");
 			return;
 		}
 		cells[rowIndex-1][colIndex-1] = cellData-1;
