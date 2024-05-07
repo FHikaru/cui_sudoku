@@ -51,10 +51,19 @@ public class Sudoku {
 //		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
-//	public Sudoku(Scanner scan) {
-//		this.scan = scan;
-//		board = new Board();
-//	}
+	public Sudoku(Scanner scan, int size) {
+		//sizeが平方数かの判定
+		int sizeSqrt = (int)Math.sqrt((double)size);
+		if(size != sizeSqrt * sizeSqrt) {
+			System.err.println("引数が平方数ではありません");
+		}
+
+		this.size = size;
+		this.scan = scan;
+		board = new Board(size);
+		board = genUniqueBoardAlt();
+		board.registerCells();
+	}
 	
 	/**
 	 * 白紙から回答を作成する。
@@ -264,7 +273,7 @@ public class Sudoku {
 						inputRestriction(1, board.SIZE+1, "値")
 						);
 			}catch(Board.OutOfRangeIndexException e) {
-				System.out.println("盤面の範囲外がしていされました");
+				System.out.println("盤面の範囲外が指定されました");
 				System.out.println("もう一度入力してください");
 				
 			}catch(Board.UndefinedValueException e) {
