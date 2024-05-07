@@ -307,6 +307,23 @@ public class Board {
 	}
 	
 	/**
+	 * 盤面内の空欄セルの数を返す
+	 * @return int : 空欄セルの数
+	 */
+	public int countBlanks() {
+		int counter = 0;
+		for(int[] array : cells) {
+			for(int cell : array) {
+				if(cell == INITNUM) {
+					counter++;
+				}
+			}
+		}
+//		System.out.println(counter);
+		return counter;
+	}
+	
+	/**
 	 * 盤面のセル内が空白か判定する。
 	 * @param rowIndex : 行のインデックス　[1, 盤面の一辺の長さ]
 	 * @param colIndex : 列のインデックス [1, 盤面の一辺の長さ]

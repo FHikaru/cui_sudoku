@@ -7,6 +7,7 @@ import java.util.Scanner;
  */
 public class Sudoku {
 	private final int DEFAULTSIZE = 9;
+	private final double BLANKRATE = 0.60;
 	
 	private Scanner scan;
 	
@@ -136,6 +137,11 @@ public class Sudoku {
 			next.resetCell(row, col);
 			
 			if(countBoardAnswer(next) != 1 ) {
+//				System.out.println(size*size*BLANKRATE);
+				if(board.countBlanks() < size*size*BLANKRATE){
+					board = genAnswerBoard(size);
+					continue;
+				}
 				break;
 			}
 			board = next;
