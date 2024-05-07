@@ -337,6 +337,20 @@ public class Board {
 	 * 盤面を整形して表示する
 	 */
 	public void printBoard() {
+		// ANSIエスケープコードによる装飾
+		//文字色一覧
+        String red    = "\u001b[00;31m";
+        String green  = "\u001b[00;32m";
+        String yellow = "\u001b[00;33m";
+        String purple = "\u001b[00;34m";
+        String pink   = "\u001b[00;35m";
+        String cyan   = "\u001b[00;36m";
+        //特殊処理
+        String bold   = "\u001b[01m";
+        String uline  = "\u001b[04m";
+        String end    = "\u001b[00m";
+        
+        
 		// 表示
 		System.out.println();
 		System.out.print(" |");
@@ -380,7 +394,14 @@ public class Board {
 				if(cells[row][col] == INITNUM) {
 					System.out.print(".");
 				}else {
-					System.out.print(cells[row][col]+1);
+					if(defaultCells[row][col] != INITNUM) {
+						System.out.print(green + bold + uline);
+						System.out.print(cells[row][col]+1);
+						System.out.print(end);
+						
+					}else {
+						System.out.print(cells[row][col]+1);
+					}
 				}
 			}
 			System.out.println("|");
