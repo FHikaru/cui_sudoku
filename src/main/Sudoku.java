@@ -7,6 +7,7 @@ import java.util.Scanner;
  */
 public class Sudoku {
 	private final int DEFAULTSIZE = 9;
+	private final double BLANKRATE = 0.60;
 	
 	private Scanner scan;
 	
@@ -25,7 +26,8 @@ public class Sudoku {
 //		board = genUniqueBoard(board);
 //		board = genAnswerBoard(BOARDSIZE);
 		board = genUniqueBoardAlt();
-		System.out.println("解の個数 : " + countBoardAnswer(board));
+		board.registerCells();
+//		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
 	/**
@@ -46,13 +48,23 @@ public class Sudoku {
 //		board = genUniqueBoard(board);
 //		board = genAnswerBoard(BOARDSIZE);
 		board = genUniqueBoardAlt();
-		System.out.println("解の個数 : " + countBoardAnswer(board));
+		board.registerCells();
+//		System.out.println("解の個数 : " + countBoardAnswer(board));
 	}
 	
-//	public Sudoku(Scanner scan) {
-//		this.scan = scan;
-//		board = new Board();
-//	}
+	public Sudoku(Scanner scan, int size) {
+		//sizeが平方数かの判定
+		int sizeSqrt = (int)Math.sqrt((double)size);
+		if(size != sizeSqrt * sizeSqrt) {
+			System.err.println("引数が平方数ではありません");
+		}
+
+		this.size = size;
+		this.scan = scan;
+		board = new Board(size);
+		board = genUniqueBoardAlt();
+		board.registerCells();
+	}
 	
 	/**
 	 * 白紙から回答を作成する。
@@ -97,7 +109,11 @@ public class Sudoku {
 					int c = (((colGridOut) * sizeSqrt ) + (colGridIn)) % size;
 					int n = numLine[(((colGridOut + sectionOffset[(int)row/sizeSqrt][row%sizeSqrt]) * sizeSqrt )
 							+ (colGridIn + startOffset[(int)row/sizeSqrt])) % size];
-					board.setCell(r+1, c+1, n);
+					try {
+						board.setCell(r+1, c+1, n);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -121,6 +137,11 @@ public class Sudoku {
 			next.resetCell(row, col);
 			
 			if(countBoardAnswer(next) != 1 ) {
+//				System.out.println(size*size*BLANKRATE);
+				if(board.countBlanks() < size*size*BLANKRATE){
+					board = genAnswerBoard(size);
+					continue;
+				}
 				break;
 			}
 			board = next;
@@ -160,7 +181,11 @@ public class Sudoku {
 					n = ((nStart + num) % size )+1;
 					if(board.isBlank(r, c)) {
 						Board next = board.copyBoard();
-						next.setCell(r, c, n);
+						try {
+							next.setCell(r, c, n);
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
 						Board ans = genUniqueBoard(next);
 						if(ans == null) {
 							continue;
@@ -213,7 +238,11 @@ public class Sudoku {
 					n = ((nStart + num) % size )+1;
 					if(board.isBlank(r, c)) {
 						Board next = board.copyBoard();
-						next.setCell(r, c, n);
+						try {
+							next.setCell(r, c, n);
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
 //						next.printBoard();
 						counter += countBoardAnswer(next);
 						selected = true;
@@ -242,12 +271,26 @@ public class Sudoku {
 		board.printBoard();
 		
 		while(!board.isFilled()) {
-			//入力をboardに反映
-			board.setCell(
-					inputRestriction(1, board.SIZE+1, "行"),
-					inputRestriction(1, board.SIZE+1, "列"),
-					inputRestriction(1, board.SIZE+1, "値")
-					);
+			try {
+				//入力をboardに反映
+				board.setCell(
+						inputRestriction(1, board.SIZE+1, "行"),
+						inputRestriction(1, board.SIZE+1, "列"),
+						inputRestriction(1, board.SIZE+1, "値")
+						);
+			}catch(Board.OutOfRangeIndexException e) {
+				System.out.println("盤面の範囲外が指定されました");
+				System.out.println("もう一度入力してください");
+				
+			}catch(Board.UndefinedValueException e) {
+				System.out.println("入力できない値が指定されました");
+				System.out.println("もう一度入力してください");
+				
+			}catch(Board.RejectedPosionException e) {
+				System.out.println("指定した場所は初期値のため変更することができません");
+				System.out.println("もう一度入力してください");
+				
+			}
 			//表示
 			board.printBoard();
 		}
@@ -268,13 +311,22 @@ public class Sudoku {
 //		Scanner scan = new Scanner(System.in);
 		int num = 0;
 		while(true) {
-//			System.out.print(String.format("%s[%d, %d) : ", description, lowerLimit, upperLimit));
-			System.out.print(description + "[" + lowerLimit + ", " + (upperLimit-1) + "] : ");
-			num = scan.nextInt();
-			
-			if(lowerLimit <= num && num < upperLimit) {
-				break;
+			try {
+//				System.out.print(String.format("%s[%d, %d) : ", description, lowerLimit, upperLimit));
+				System.out.print(description + "[" + lowerLimit + ", " + (upperLimit-1) + "] : ");
+
+				num = scan.nextInt();
+				
+				if(lowerLimit <= num && num < upperLimit) {
+					break;
+				}else {
+					System.out.println("[" + lowerLimit + ", " + (upperLimit-1) + "]の範囲外の数値が入力されました");
+				}
+			}catch(Exception e) {
+				scan.nextLine();
+				System.out.println("数値以外が入力されました");
 			}
+
 			System.out.println("もう一度入力してください。");
 		}
 		return num;
